@@ -24,7 +24,7 @@ $ docker run \
 
 ## Run script
 
-There is also a run-script to start the image as a normal local app. Download the `xca` run-script, make it executeable and run it.
+There is also a run-script to start the image as a normal local app. Download the `xca` run-script, make it executable and run it:
 
 ```
 ./xca xca_store.xdb

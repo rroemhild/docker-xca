@@ -1,0 +1,51 @@
+#!/bin/bash
+
+readonly XDB_FILE=$1
+readonly XSOCKET_PATH="/tmp/.X11-unix"
+readonly DOCKER_IMAGE="rroemhild/xca"
+
+usage() {
+    echo "Usage: $0 XDBFILE"
+    exit
+}
+
+is_set() {
+    local var=$1
+
+    [[ -n $var ]]
+}
+
+file_exist() {
+    local file=$1
+
+    [[ -e $file ]]
+}
+
+xdb_absolute_path() {
+    local xdb_file="`readlink -m $XDB_FILE`"
+
+    if file_exist $xdb_file ; then
+        echo $xdb_file
+    else
+        usage
+    fi
+}
+
+run() {
+    local xdb_file_abspath=$(xdb_absolute_path)
+    local xdb_file_basename=$(basename $xdb_file_abspath)
+
+    docker run \
+      --rm \
+      --privileged \
+      -v $XSOCKET_PATH:$XSOCKET_PATH \
+      -v $xdb_file_abspath:/home/xca/$xdb_file_basename \
+      $DOCKER_IMAGE
+}
+
+is_set $XDB_FILE \
+  || usage
+
+run
+
+exit 0
